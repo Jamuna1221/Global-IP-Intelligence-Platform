@@ -1,4 +1,7 @@
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { initializeAdmin } from "./utils/auth";
+
 import LandingPage from "./Pages/LandingPage";
 import Login from "./Pages/Login";
 import Register from "./Pages/Register";
@@ -7,6 +10,10 @@ import AnalystDashboard from "./Pages/AnalystDashboard";
 import AdminDashboard from "./Pages/AdminDashboard";
 
 function App() {
+  useEffect(() => {
+    initializeAdmin();
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />

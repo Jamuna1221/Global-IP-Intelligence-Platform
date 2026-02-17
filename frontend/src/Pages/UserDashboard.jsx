@@ -1,25 +1,38 @@
-export default function UserDashboard() {
-  return (
-    <div className="min-h-screen bg-gray-50 p-10">
-      <div className="flex items-center gap-4 mb-8">
-        <img
-          src="https://i.pravatar.cc/100"
-          alt="profile"
-          className="w-16 h-16 rounded-full"
-        />
-        <div>
-          <h2 className="text-xl font-bold">Username: DemoUser</h2>
-          <p className="text-gray-500">Role: User</p>
-        </div>
-      </div>
+import { getUser, saveRequest } from "../utils/auth";
 
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h3 className="text-lg font-semibold mb-4">Search IP</h3>
+export default function UserDashboard() {
+  const user = getUser();
+
+  const handleRequestAdmin = () => {
+    saveRequest({
+      username: user.username,
+      requestedRole: "ADMIN",
+    });
+  };
+
+  return (
+    <div className="p-10">
+      <h1 className="text-3xl font-bold text-indigo-600">
+        Welcome {user.username}
+      </h1>
+
+      <div className="mt-8 bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">Search IP</h2>
+
         <input
           type="text"
-          placeholder="Search IP..."
-          className="w-full p-2 border rounded"
+          placeholder="Search patent..."
+          className="border p-2 w-full mb-4 rounded"
         />
+      </div>
+
+      <div className="mt-8">
+        <button
+          onClick={handleRequestAdmin}
+          className="bg-yellow-500 text-white px-6 py-2 rounded"
+        >
+          Request Admin Access
+        </button>
       </div>
     </div>
   );
