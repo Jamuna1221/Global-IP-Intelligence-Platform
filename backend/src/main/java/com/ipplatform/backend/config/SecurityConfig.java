@@ -88,6 +88,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/assets/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/ip-assets/**").permitAll()
 
+                        // ── Legal Status API ─────────────────────────────
+                        .requestMatchers(HttpMethod.GET, "/api/legal-status/summary").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/legal-status/pipeline").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/legal-status/alerts").hasAnyRole("ANALYST", "ADMIN")
+
                         // ── ROLE_USER ────────────────────────────────
                         .requestMatchers(HttpMethod.POST, "/api/user/logout").hasRole("USER")
                         .requestMatchers(HttpMethod.POST, "/api/user/change-password").hasRole("USER")
