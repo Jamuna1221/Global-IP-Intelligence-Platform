@@ -27,8 +27,8 @@ function LoginInner() {
     }
 
     try {
-      const res = await axios.post(`${BACKEND_URL}/api/auth/google`, {
-        token: tokenResponse.access_token,
+      const res = await axios.post("http://localhost:8081/api/auth/google", {
+        token: credentialResponse.credential,
       });
 
       const data = res.data;
@@ -67,10 +67,10 @@ function LoginInner() {
       setLoading(true);
       let endpoint =
         form.role === "ADMIN"
-          ? `${BACKEND_URL}/api/admin/login`
+          ? "http://localhost:8081/api/admin/login"
           : form.role === "ANALYST"
-          ? `${BACKEND_URL}/api/analyst/login`
-          : `${BACKEND_URL}/api/user/login`;
+          ? "http://localhost:8081/api/analyst/login"
+          : "http://localhost:8081/api/user/login";
 
       const res = await axios.post(endpoint, {
         username: form.username,
