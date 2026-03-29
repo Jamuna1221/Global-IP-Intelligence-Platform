@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import StatCard from "../../components/StatCard";
 
 export default function UserDashboardPage() {
@@ -16,8 +16,8 @@ export default function UserDashboardPage() {
 
     try{
 
-      const res = await axios.get(
-        "http://localhost:8081/api/search",
+      const res = await api.get(
+        "/api/search",
         {
           params:{
             q:"artificial intelligence",

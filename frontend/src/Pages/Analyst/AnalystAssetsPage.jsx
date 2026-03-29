@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 export default function AnalystAssetsPage() {
 
@@ -15,9 +15,9 @@ export default function AnalystAssetsPage() {
   const fetchAssets = async () => {
     try {
 
-      const response = await axios.get(
-        "http://localhost:8081/api/search",
-        {
+      const response = await api.get(
+        "/api/search",
+        { 
           params: {
             q: query,
             type: "PATENT",

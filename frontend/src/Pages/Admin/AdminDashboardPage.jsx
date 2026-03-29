@@ -1,25 +1,19 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 export default function AdminDashboardPage() {
 
   const [users, setUsers] = useState([]);
   const [pending, setPending] = useState([]);
 
-  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const u = await axios.get("http://localhost:8081/api/admin/users", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    const p = await axios.get("http://localhost:8081/api/admin/analysts/pending", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const u = await api.get("/api/admin/users");
+    const p = await api.get("/api/admin/analysts/pending");
 
     setUsers(u.data);
     setPending(p.data);

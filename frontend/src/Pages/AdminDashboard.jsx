@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   LayoutDashboard,
@@ -95,14 +95,14 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${BASE}/api/admin/users`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/users");
       setUsers(res.data);
     } catch { toast.error("Failed to load users"); }
   };
 
   const fetchPending = async () => {
     try {
-      const res = await axios.get(`${BASE}/api/admin/analysts/pending`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/analysts/pending");
       setPending(res.data);
     } catch { toast.error("Failed to load pending requests"); }
   };
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
   /* ─── Actions ────────────────────────────────────────────────────────── */
   const approveAnalyst = async (id) => {
     try {
-      await axios.post(`${BASE}/api/admin/analysts/${id}/approve`, {}, { headers: authHeaders() });
+      await api.post(`/api/admin/analysts/${id}/approve`);
       toast.success("Analyst Approved 🚀");
       fetchPending(); fetchUsers();
       fetchLogs(0, logAction, true);
@@ -152,7 +152,7 @@ export default function AdminDashboard() {
 
   const rejectAnalyst = async (id) => {
     try {
-      await axios.post(`${BASE}/api/admin/analysts/${id}/reject`, {}, { headers: authHeaders() });
+      await api.post(`/api/admin/analysts/${id}/reject`);
       toast.success("Analyst Rejected ❌");
       fetchPending(); fetchUsers();
       fetchLogs(0, logAction, true);
@@ -162,9 +162,14 @@ export default function AdminDashboard() {
   const viewDocument = async (id) => {
     try {
       setLoadingDoc(id);
-      const res = await axios.get(`${BASE}/api/admin/analysts/${id}/document`, {
-        headers: authHeaders(), responseType: "blob",
-      });
+
+      const res = await api.get(
+        `/api/admin/analysts/${id}/document`,
+        {
+          responseType: "blob",
+        }
+      );
+
       const blob = new Blob([res.data], { type: res.headers["content-type"] });
       const url  = window.URL.createObjectURL(blob);
       window.open(url, "_blank");

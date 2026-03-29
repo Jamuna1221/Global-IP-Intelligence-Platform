@@ -1,33 +1,26 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 export default function AdminApprovalsPage() {
 
   const [pending, setPending] = useState([]);
-  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
     fetchPending();
   }, []);
 
   const fetchPending = async () => {
-    const res = await axios.get("http://localhost:8081/api/admin/analysts/pending", {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.get("/api/admin/analysts/pending");
     setPending(res.data);
   };
 
   const approve = async (id) => {
-    await axios.post(`http://localhost:8081/api/admin/analysts/${id}/approve`, {}, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await api.post(`/api/admin/analysts/${id}/approve`);
     fetchPending();
   };
 
   const reject = async (id) => {
-    await axios.post(`http://localhost:8081/api/admin/analysts/${id}/reject`, {}, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await api.post(`/api/admin/analysts/${id}/reject`);
     fetchPending();
   };
 
