@@ -27,8 +27,8 @@ function LoginInner() {
     }
 
     try {
-      const res = await axios.post("http://localhost:8081/api/auth/google", {
-        token: credentialResponse.credential,
+      const res = await axios.post(`${BACKEND_URL}/api/user/google`, {
+        token: tokenResponse.access_token, // Fixed credential reference
       });
 
       const data = res.data;
@@ -37,6 +37,8 @@ function LoginInner() {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
       localStorage.setItem("role", cleanRole);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("email", data.email);
 
       toast.success("Google login successful 🚀");
 
@@ -67,10 +69,10 @@ function LoginInner() {
       setLoading(true);
       let endpoint =
         form.role === "ADMIN"
-          ? "http://localhost:8081/api/admin/login"
+          ? `${BACKEND_URL}/api/admin/login`
           : form.role === "ANALYST"
-          ? "http://localhost:8081/api/analyst/login"
-          : "http://localhost:8081/api/user/login";
+          ? `${BACKEND_URL}/api/analyst/login`
+          : `${BACKEND_URL}/api/user/login`;
 
       const res = await axios.post(endpoint, {
         username: form.username,
@@ -84,6 +86,8 @@ function LoginInner() {
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
       localStorage.setItem("role", cleanRole);
+      localStorage.setItem("username", data.username);
+      localStorage.setItem("email", data.email);
 
       toast.success("Login successful 🚀");
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import {
   PieChart,
   Pie,
@@ -32,8 +32,8 @@ export default function AnalystDashboardPage() {
       const updatedHistory = [keyword, ...history.filter(h => h !== keyword)].slice(0,2);
       localStorage.setItem("history", JSON.stringify(updatedHistory));
 
-      const response = await axios.get(
-        "http://localhost:8081/api/search",
+      const response = await api.get(
+        "/api/search",
         {
           params: {
             q: keyword,

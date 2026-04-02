@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
 import { useNavigate, NavLink } from "react-router-dom";
+import api from "../services/api";
+import axios from "axios";
 import { toast } from "react-toastify";
 import {
   LayoutDashboard,
@@ -14,7 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-const BASE = "http://localhost:8081";
+// // Activity Logs & Health Dashboard
 
 const ACTION_COLORS = {
   ANALYST_APPROVED:    "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30",
@@ -95,14 +96,14 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${BASE}/api/admin/users`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/users");
       setUsers(res.data);
     } catch { toast.error("Failed to load users"); }
   };
 
   const fetchPending = async () => {
     try {
-      const res = await axios.get(`${BASE}/api/admin/analysts/pending`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/analysts/pending");
       setPending(res.data);
     } catch { toast.error("Failed to load pending requests"); }
   };
@@ -110,7 +111,7 @@ export default function AdminDashboard() {
   const fetchHealth = async () => {
     setHealthChecking(true);
     try {
-      const res = await axios.get(`${BASE}/api/admin/health`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/health");
       setHealth(res.data);
     } catch (err) {
       setHealth({
@@ -126,10 +127,10 @@ export default function AdminDashboard() {
   const fetchLogs = async (page, action, reset = false) => {
     reset ? setLogsLoading(true) : setLoadingMore(true);
     try {
-      const params = new URLSearchParams({ page, size: 20 });
-      if (action && action !== "ALL") params.append("action", action);
+      const params = { page, size: 20 };
+      if (action && action !== "ALL") params.action = action;
 
-      const res = await axios.get(`${BASE}/api/admin/logs?${params}`, { headers: authHeaders() });
+      const res = await api.get("/api/admin/logs", { params });
       const data = res.data;
 
       setLogs(prev => reset ? data.content : [...prev, ...data.content]);
@@ -143,7 +144,7 @@ export default function AdminDashboard() {
   /* ─── Actions ────────────────────────────────────────────────────────── */
   const approveAnalyst = async (id) => {
     try {
-      await axios.post(`${BASE}/api/admin/analysts/${id}/approve`, {}, { headers: authHeaders() });
+      await api.post(`/api/admin/analysts/${id}/approve`);
       toast.success("Analyst Approved 🚀");
       fetchPending(); fetchUsers();
       fetchLogs(0, logAction, true);
@@ -152,7 +153,7 @@ export default function AdminDashboard() {
 
   const rejectAnalyst = async (id) => {
     try {
-      await axios.post(`${BASE}/api/admin/analysts/${id}/reject`, {}, { headers: authHeaders() });
+      await api.post(`/api/admin/analysts/${id}/reject`);
       toast.success("Analyst Rejected ❌");
       fetchPending(); fetchUsers();
       fetchLogs(0, logAction, true);
@@ -162,9 +163,14 @@ export default function AdminDashboard() {
   const viewDocument = async (id) => {
     try {
       setLoadingDoc(id);
-      const res = await axios.get(`${BASE}/api/admin/analysts/${id}/document`, {
-        headers: authHeaders(), responseType: "blob",
-      });
+
+      const res = await api.get(
+        `/api/admin/analysts/${id}/document`,
+        {
+          responseType: "blob",
+        }
+      );
+
       const blob = new Blob([res.data], { type: res.headers["content-type"] });
       const url  = window.URL.createObjectURL(blob);
       window.open(url, "_blank");

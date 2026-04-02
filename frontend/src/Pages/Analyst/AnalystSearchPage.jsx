@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function AnalystSearchPage() {
@@ -69,10 +69,14 @@ export default function AnalystSearchPage() {
 
     try {
 
-      const url =
-        `http://localhost:8081/api/search?q=${encodeURIComponent(filters.keyword)}&type=PATENT&page=0&size=30`;
-
-      const res = await axios.get(url);
+      const res = await api.get("/api/search", {
+        params: {
+          q: filters.keyword,
+          type: "PATENT",
+          page: 0,
+          size: 30
+        }
+      });
 
       const data = res.data.results || [];
 
@@ -181,9 +185,9 @@ export default function AnalystSearchPage() {
 
       // ✅ CALL ALL 3 APIs
       const [trendRes, citationRes, familyRes] = await Promise.all([
-        axios.get(`http://localhost:8081/api/visualization/trends?keyword=${keyword}`),
-        axios.get(`http://localhost:8081/api/visualization/citations?keyword=${keyword}`),
-        axios.get(`http://localhost:8081/api/visualization/families?keyword=${keyword}`)
+        api.get(`/api/visualization/trends?keyword=${keyword}`),
+        api.get(`/api/visualization/citations?keyword=${keyword}`),
+        api.get(`/api/visualization/families?keyword=${keyword}`)
       ]);
 
       navigate("/analyst/visualization", {

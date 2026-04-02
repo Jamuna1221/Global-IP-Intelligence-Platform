@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
+import api from "../services/api";
 import { User, Mail, Shield, Building, Phone } from "lucide-react";
 
 const Profile = () => {
@@ -30,16 +30,14 @@ const Profile = () => {
       let endpoint = "";
 
       if (role === "ADMIN") {
-        endpoint = "http://localhost:8081/api/admin/me";
+        endpoint = "/api/admin/me";
       } else if (role === "ANALYST") {
-        endpoint = "http://localhost:8081/api/analyst/me";
+        endpoint = "/api/analyst/me";
       } else {
-        endpoint = "http://localhost:8081/api/user/me";
+        endpoint = "/api/user/me";
       }
 
-      const res = await axios.get(endpoint, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res = await api.get(endpoint);
 
       setUser(res.data);
 
